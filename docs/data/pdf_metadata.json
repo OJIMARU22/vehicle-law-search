@@ -1,0 +1,282 @@
+{
+    "details": [
+        {
+            "id": "S001",
+            "title": "走行装置",
+            "keywords": [
+                "タイヤ",
+                "車輪",
+                "ホイール"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S001.pdf"
+        },
+        {
+            "id": "S002",
+            "title": "制動装置",
+            "keywords": [
+                "ブレーキ",
+                "制動",
+                "制動力"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S002.pdf"
+        },
+        {
+            "id": "S003",
+            "title": "かじ取装置",
+            "keywords": [
+                "ハンドル",
+                "ステアリング",
+                "操舵"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S003.pdf"
+        },
+        {
+            "id": "S004",
+            "title": "前照灯",
+            "keywords": [
+                "ヘッドライト",
+                "ヘッドランプ",
+                "前部灯"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S004.pdf"
+        },
+        {
+            "id": "S005",
+            "title": "前部霧灯",
+            "keywords": [
+                "フォグランプ",
+                "フォグライト",
+                "霧灯"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S005.pdf"
+        },
+        {
+            "id": "S006",
+            "title": "側方照射灯",
+            "keywords": [
+                "コーナリングランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S006.pdf"
+        },
+        {
+            "id": "S007",
+            "title": "車幅灯",
+            "keywords": [
+                "ポジションランプ",
+                "スモールランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S007.pdf"
+        },
+        {
+            "id": "S008",
+            "title": "尾灯",
+            "keywords": [
+                "テールランプ",
+                "テールライト",
+                "後部灯"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S008.pdf"
+        },
+        {
+            "id": "S009",
+            "title": "後部霧灯",
+            "keywords": [
+                "リアフォグランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S009.pdf"
+        },
+        {
+            "id": "S010",
+            "title": "駐車灯",
+            "keywords": [
+                "パーキングランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S010.pdf"
+        },
+        {
+            "id": "S011",
+            "title": "後退灯",
+            "keywords": [
+                "バックランプ",
+                "リバースランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S011.pdf"
+        },
+        {
+            "id": "S012",
+            "title": "制動灯",
+            "keywords": [
+                "ブレーキランプ",
+                "ストップランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S012.pdf"
+        },
+        {
+            "id": "S013",
+            "title": "方向指示器",
+            "keywords": [
+                "ウインカー",
+                "ターンシグナル",
+                "方向指示灯"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S013.pdf"
+        },
+        {
+            "id": "S014",
+            "title": "補助方向指示器",
+            "keywords": [
+                "サイドターンシグナル"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S014.pdf"
+        },
+        {
+            "id": "S015",
+            "title": "番号灯",
+            "keywords": [
+                "ナンバー灯",
+                "ライセンスランプ"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S015.pdf"
+        },
+        {
+            "id": "S016",
+            "title": "後部反射器",
+            "keywords": [
+                "リフレクター",
+                "反射板"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S016.pdf"
+        },
+        {
+            "id": "S017",
+            "title": "側方反射器",
+            "keywords": [
+                "サイドリフレクター"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S017.pdf"
+        },
+        {
+            "id": "S018",
+            "title": "大型後部反射器",
+            "keywords": [
+                "大型リフレクター"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S018.pdf"
+        },
+        {
+            "id": "S019",
+            "title": "後部上部反射器",
+            "keywords": [
+                "上部リフレクター"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S019.pdf"
+        },
+        {
+            "id": "S020",
+            "title": "座席ベルト",
+            "keywords": [
+                "シートベルト",
+                "安全ベルト"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S020.pdf"
+        },
+        {
+            "id": "S021",
+            "title": "座席ベルトの取付装置",
+            "keywords": [
+                "シートベルト取付",
+                "アンカー"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S021.pdf"
+        },
+        {
+            "id": "S022",
+            "title": "窓ガラス",
+            "keywords": [
+                "ウィンドウ",
+                "ガラス",
+                "フロントガラス"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S022.pdf"
+        },
+        {
+            "id": "S023",
+            "title": "騒音防止装置",
+            "keywords": [
+                "マフラー",
+                "消音器",
+                "排気音"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S023.pdf"
+        },
+        {
+            "id": "S024",
+            "title": "ばい煙、悪臭のあるガス等の発散防止装置",
+            "keywords": [
+                "排気ガス",
+                "エミッション"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S024.pdf"
+        },
+        {
+            "id": "S025",
+            "title": "警音器",
+            "keywords": [
+                "ホーン",
+                "クラクション"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/S025.pdf"
+        }
+    ],
+    "appendices": [
+        {
+            "id": "B001",
+            "title": "制動装置の技術基準",
+            "keywords": [
+                "ブレーキ",
+                "制動力",
+                "制動距離"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/B001.pdf"
+        },
+        {
+            "id": "B002",
+            "title": "前照灯の技術基準",
+            "keywords": [
+                "ヘッドライト",
+                "照度",
+                "配光"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/B002.pdf"
+        },
+        {
+            "id": "B003",
+            "title": "座席ベルトの技術基準",
+            "keywords": [
+                "シートベルト",
+                "強度",
+                "引張試験"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/B003.pdf"
+        },
+        {
+            "id": "B004",
+            "title": "窓ガラスの技術基準",
+            "keywords": [
+                "ガラス",
+                "透過率",
+                "強度"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/B004.pdf"
+        },
+        {
+            "id": "B005",
+            "title": "速度計の技術基準",
+            "keywords": [
+                "スピードメーター",
+                "速度表示"
+            ],
+            "url": "https://www.mlit.go.jp/jidosha/content/B005.pdf"
+        }
+    ]
+}
