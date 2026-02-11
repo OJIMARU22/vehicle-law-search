@@ -74,6 +74,34 @@ class SearchEngine {
         return Array.from(terms);
     }
 
+    // 検索クエリのパース（AND/OR検索対応）
+    parseSearchQuery(query) {
+        // ORで分割（大文字小文字を区別しない）
+        const orGroups = query.split(/\s+OR\s+/i);
+
+        if (orGroups.length > 1) {
+            // OR検索: 各グループの同義語を展開
+            const expandedGroups = orGroups.map(group => {
+                const trimmed = group.trim();
+                return this.expandSynonyms(trimmed);
+            });
+            return {
+                mode: 'OR',
+                groups: expandedGroups,
+                originalTerms: orGroups.map(g => g.trim())
+            };
+        } else {
+            // AND検索: スペース区切りで分割し、各単語の同義語を展開
+            const andTerms = query.trim().split(/\s+/);
+            const expandedTerms = andTerms.flatMap(term => this.expandSynonyms(term));
+            return {
+                mode: 'AND',
+                terms: Array.from(new Set(expandedTerms)), // 重複を削除
+                originalTerms: andTerms
+            };
+        }
+    }
+
     // テキストのハイライト
     highlightText(text, terms) {
         if (!text || terms.length === 0) return text;
@@ -102,28 +130,50 @@ class SearchEngine {
         const content = (article.title + ' ' + article.content).toLowerCase();
         const queryLower = query.toLowerCase();
 
-        // 完全一致ボーナス
+        // 完全一致ボーナス（増加）
         if (content.includes(queryLower)) {
-            score += 100;
+            score += 150;
         }
 
         // 各検索語のマッチング
         for (const term of terms) {
             const termLower = term.toLowerCase();
             const matches = (content.match(new RegExp(this.escapeRegex(termLower), 'gi')) || []).length;
-            score += matches * 10;
+            score += matches * 15; // スコアを1.5倍に増加
 
-            // タイトルに含まれる場合はボーナス
+            // タイトルに含まれる場合はボーナス（増加）
             if (article.title.toLowerCase().includes(termLower)) {
-                score += 50;
+                score += 80;
+            }
+
+            // 条文番号に含まれる場合もボーナス
+            if (article.articleNumber && article.articleNumber.toLowerCase().includes(termLower)) {
+                score += 60;
             }
         }
 
         return score;
     }
 
-    // PDF資料の検索
-    searchPDFs(query, terms) {
+    // PDFのURLを取得
+    getPDFUrl(pdfId) {
+        // 細目告示のメタデータから検索
+        const detailMeta = this.pdfMetadata.details?.find(item => item.id === pdfId);
+        if (detailMeta && detailMeta.url) {
+            return detailMeta.url;
+        }
+
+        // 別添のメタデータから検索
+        const appendixMeta = this.pdfMetadata.appendices?.find(item => item.id === pdfId);
+        if (appendixMeta && appendixMeta.url) {
+            return appendixMeta.url;
+        }
+
+        return null;
+    }
+
+    // PDF資料の検索（AND/OR対応）
+    searchPDFs(query, parsedQuery) {
         const pdfResults = [];
 
         // すべてのPDFカテゴリを検索
@@ -144,24 +194,50 @@ class SearchEngine {
 
                 let score = 0;
                 let matchedTerms = [];
+                let matches = false;
 
-                // 各検索語のマッチング
-                for (const term of terms) {
-                    const termLower = term.toLowerCase();
-                    if (searchText.includes(termLower)) {
-                        const matches = (searchText.match(new RegExp(this.escapeRegex(termLower), 'gi')) || []).length;
-                        score += matches * 5;
-                        matchedTerms.push(term);
-
-                        // タイトルに含まれる場合はボーナス
-                        if (pdf.title.toLowerCase().includes(termLower)) {
-                            score += 30;
+                if (parsedQuery.mode === 'OR') {
+                    // OR検索: いずれかのグループにマッチすればOK
+                    for (const group of parsedQuery.groups) {
+                        const groupMatches = group.some(term => searchText.includes(term.toLowerCase()));
+                        if (groupMatches) {
+                            matches = true;
+                            matchedTerms = matchedTerms.concat(group);
+                            break;
                         }
+                    }
+                } else {
+                    // AND検索: すべての元の単語がマッチする必要がある
+                    matches = parsedQuery.originalTerms.every(originalTerm => {
+                        const synonyms = this.expandSynonyms(originalTerm);
+                        return synonyms.some(syn => searchText.includes(syn.toLowerCase()));
+                    });
+                    if (matches) {
+                        matchedTerms = parsedQuery.terms;
                     }
                 }
 
-                if (score > 0) {
-                    // コンテンツのプレビューを作成（最初のマッチ周辺を表示）
+                if (matches) {
+                    // スコア計算
+                    for (const term of matchedTerms) {
+                        const termLower = term.toLowerCase();
+                        if (searchText.includes(termLower)) {
+                            const termMatches = (searchText.match(new RegExp(this.escapeRegex(termLower), 'gi')) || []).length;
+                            score += termMatches * 10;
+
+                            // タイトルに含まれる場合はボーナス
+                            if (pdf.title.toLowerCase().includes(termLower)) {
+                                score += 50;
+                            }
+
+                            // キーワードに含まれる場合もボーナス
+                            if (pdf.keywords && pdf.keywords.some(kw => kw.toLowerCase().includes(termLower))) {
+                                score += 30;
+                            }
+                        }
+                    }
+
+                    // コンテンツのプレビューを作成
                     let preview = pdf.content.substring(0, 200);
                     for (const term of matchedTerms) {
                         const index = pdf.content.toLowerCase().indexOf(term.toLowerCase());
@@ -183,8 +259,9 @@ class SearchEngine {
                         keywords: pdf.keywords || [],
                         fullTextLength: pdf.fullTextLength || pdf.content.length,
                         score: score,
-                        highlightedTitle: this.highlightText(pdf.title, terms),
-                        highlightedContent: this.highlightText(preview, terms)
+                        highlightedTitle: this.highlightText(pdf.title, matchedTerms),
+                        highlightedContent: this.highlightText(preview, matchedTerms),
+                        url: this.getPDFUrl(pdf.id)
                     });
                 }
             }
@@ -202,7 +279,7 @@ class SearchEngine {
             return { articles: [], pdfs: [] };
         }
 
-        const terms = this.expandSynonyms(query.trim());
+        const parsedQuery = this.parseSearchQuery(query.trim());
         const articleResults = [];
 
         // 法令条文を検索
@@ -213,14 +290,33 @@ class SearchEngine {
 
             for (const article of law.articles) {
                 const content = (article.title + ' ' + article.content).toLowerCase();
+                let matches = false;
+                let matchedTerms = [];
 
-                // いずれかの検索語にマッチするか確認
-                const matches = terms.some(term =>
-                    content.includes(term.toLowerCase())
-                );
+                if (parsedQuery.mode === 'OR') {
+                    // OR検索: いずれかのグループにマッチすればOK
+                    for (const group of parsedQuery.groups) {
+                        const groupMatches = group.some(term => content.includes(term.toLowerCase()));
+                        if (groupMatches) {
+                            matches = true;
+                            matchedTerms = matchedTerms.concat(group);
+                            break;
+                        }
+                    }
+                } else {
+                    // AND検索: すべての元の単語がマッチする必要がある
+                    matches = parsedQuery.originalTerms.every(originalTerm => {
+                        // 元の単語またはその同義語のいずれかがマッチすればOK
+                        const synonyms = this.expandSynonyms(originalTerm);
+                        return synonyms.some(syn => content.includes(syn.toLowerCase()));
+                    });
+                    if (matches) {
+                        matchedTerms = parsedQuery.terms;
+                    }
+                }
 
                 if (matches) {
-                    const score = this.calculateScore(article, query, terms);
+                    const score = this.calculateScore(article, query, matchedTerms);
 
                     articleResults.push({
                         lawId: law.lawId,
@@ -231,11 +327,11 @@ class SearchEngine {
                         content: article.content,
                         paragraphs: article.paragraphs,
                         score: score,
-                        highlightedTitle: this.highlightText(article.title, terms),
+                        highlightedTitle: this.highlightText(article.title, matchedTerms),
                         highlightedContent: this.highlightText(
                             article.content.substring(0, 300) +
                             (article.content.length > 300 ? '...' : ''),
-                            terms
+                            matchedTerms
                         )
                     });
                 }
@@ -246,10 +342,11 @@ class SearchEngine {
         articleResults.sort((a, b) => b.score - a.score);
 
         // PDF資料を検索
-        const pdfResults = this.searchPDFs(query, terms);
+        const pdfResults = this.searchPDFs(query, parsedQuery);
 
-        console.log(`🔍 検索完了: "${query}" → 条文${articleResults.length}件、PDF資料${pdfResults.length}件`);
-        console.log(`📝 展開された検索語: ${terms.join(', ')}`);
+        const searchModeText = parsedQuery.mode === 'OR' ? 'OR検索' : 'AND検索';
+        console.log(`🔍 検索完了 (${searchModeText}): "${query}" → 条文${articleResults.length}件、PDF資料${pdfResults.length}件`);
+        console.log(`📝 検索モード: ${parsedQuery.mode}`);
 
         return {
             articles: articleResults,

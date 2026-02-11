@@ -217,6 +217,13 @@ function createPDFCard(result, index) {
         <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary);">
             📊 全文字数: ${(result.fullTextLength || 0).toLocaleString()}文字
         </div>
+        ${result.url ? `
+        <div style="margin-top: 15px;">
+            <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="pdf-link-button" onclick="event.stopPropagation();">
+                📥 PDFを開く
+            </a>
+        </div>
+        ` : ''}
     `;
 
     // クリックで詳細表示
@@ -264,6 +271,13 @@ function showPDFDetail(result) {
         <p style="color: var(--text-secondary); margin-bottom: 20px;">
             ${typeLabel} | 全文字数: ${(result.fullTextLength || 0).toLocaleString()}文字
         </p>
+        ${result.url ? `
+        <div style="margin-bottom: 20px;">
+            <a href="${result.url}" target="_blank" rel="noopener noreferrer" class="pdf-link-button">
+                📥 PDFを開く
+            </a>
+        </div>
+        ` : ''}
         ${result.keywords && result.keywords.length > 0 ? `
         <div style="margin-bottom: 20px; padding: 10px; background: var(--bg-secondary); border-radius: 8px;">
             <strong>🏷️ キーワード:</strong> ${result.keywords.join(', ')}
