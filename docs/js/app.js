@@ -201,7 +201,7 @@ function createPDFCard(result, index) {
     card.innerHTML = `
         <div class="result-header">
             <div class="result-title">
-                <div class="article-number">${result.id}</div>
+                <div class="article-number">${result.displayName || result.id}</div>
                 <div class="article-title">${result.highlightedTitle}</div>
             </div>
             <div class="law-badge ${typeClass}">${typeLabel}</div>
@@ -265,9 +265,10 @@ function showPDFDetail(result) {
     };
 
     const typeLabel = typeLabels[result.type] || result.typeLabel || 'PDF資料';
+    const displayName = result.displayName || result.id;
 
     modalBody.innerHTML = `
-        <h2>${result.id} ${result.title}</h2>
+        <h2>${displayName} ${result.title}</h2>
         <p style="color: var(--text-secondary); margin-bottom: 20px;">
             ${typeLabel} | 全文字数: ${(result.fullTextLength || 0).toLocaleString()}文字
         </p>

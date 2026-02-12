@@ -172,6 +172,31 @@ class SearchEngine {
         return null;
     }
 
+    // PDFのIDを分かりやすい表示名に変換
+    formatPDFDisplayName(pdfId) {
+        // IDのパターンを解析
+        const match = pdfId.match(/^([A-Z])(\d+)(-\d+)?$/);
+        if (!match) {
+            return pdfId; // パターンに一致しない場合はそのまま返す
+        }
+
+        const prefix = match[1];
+        const number = parseInt(match[2], 10);
+        const suffix = match[3] || '';
+
+        // プレフィックスに応じて表示名を生成
+        switch (prefix) {
+            case 'S':
+                return `細目告示 第${number}条${suffix}`;
+            case 'B':
+                return `別添${number}${suffix}`;
+            case 'H':
+                return `保安基準 第${number}条${suffix}`;
+            default:
+                return pdfId;
+        }
+    }
+
     // PDF資料の検索（AND/OR対応）
     searchPDFs(query, parsedQuery) {
         const pdfResults = [];
@@ -253,6 +278,7 @@ class SearchEngine {
                         type: category.type,
                         typeLabel: category.label,
                         id: pdf.id,
+                        displayName: this.formatPDFDisplayName(pdf.id), // 分かりやすい表示名を追加
                         title: pdf.title,
                         content: preview,
                         fullContent: pdf.content,
