@@ -58,6 +58,18 @@
             </section>
         </main>
 
+        <section class="changelog-section" id="changelogSection">
+            <button class="changelog-toggle" id="changelogToggle" aria-expanded="false" aria-controls="changelogBody">
+                📋 更新履歴
+                <span class="changelog-toggle-icon">▼</span>
+            </button>
+            <div class="changelog-body" id="changelogBody" role="region">
+                <ul class="changelog-list" id="changelogList">
+                    <!-- app.js から動的に生成 -->
+                </ul>
+            </div>
+        </section>
+
         <footer class="footer">
             <p>データ出典: <a href="https://elaws.e-gov.go.jp/" target="_blank" rel="noopener">e-Gov 法令検索</a></p>
             <p class="note">※ 本サイトは参考情報です。正確な情報は公式サイトをご確認ください。</p>
@@ -72,6 +84,12 @@
         </div>
     </div>
 
+    <!-- Lunr.js: 転置インデックス全文検索 -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+    <!-- 日本語サポート（TinySegmenter） -->
+    <script src="https://unpkg.com/lunr-languages/lunr.stemmer.support.js"></script>
+    <script src="https://unpkg.com/lunr-languages/tinyseg.js"></script>
+    <script src="https://unpkg.com/lunr-languages/lunr.ja.js"></script>
     <script src="js/search.js"></script>
     <script src="js/app.js"></script>
 </body>

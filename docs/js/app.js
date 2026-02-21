@@ -25,6 +25,10 @@ let searchTimeout = null;
 async function init() {
     showLoading(true);
 
+    // ローディング中のメッセージを更新
+    const loadingP = loadingIndicator.querySelector('p');
+    if (loadingP) loadingP.textContent = 'データとインデックスを読み込み中...';
+
     const success = await searchEngine.loadData();
 
     if (success) {
@@ -338,6 +342,81 @@ function showError(message) {
 }
 
 // ========================================
+// 変更履歴
+// ========================================
+
+const CHANGELOG = [
+    {
+        date: '2026-02-20',
+        badge: 'data',
+        badgeLabel: 'データ',
+        title: '同義語辞書を大幅拡充',
+        desc: '51エントリ → 95エントリへ拡張。EV/HEV系・ADAS・安全装置・ABS/ESC・英略語など車両保安基準関連の用語を追加。'
+    },
+    {
+        date: '2026-02-20',
+        badge: 'feature',
+        badgeLabel: '新機能',
+        title: 'Lunr.js（日本語対応）による全文検索を導入',
+        desc: '転置インデックス＋TF-IDFスコアリングに移行。日本語トークナイザ（TinySegmenter）を組み込み、検索精度を大幅向上。Lunrが0件の場合は従来検索へ自動フォールバック。'
+    },
+    {
+        date: '2026-02-13',
+        badge: 'fix',
+        badgeLabel: '修正',
+        title: '検索結果の法令名・条文名表示を改善',
+        desc: 'laws.json の人間が読める名称（例: 道路運送車両法）が結果カードに正しく表示されるよう修正。'
+    },
+    {
+        date: '2026-02-09',
+        badge: 'feature',
+        badgeLabel: '新機能',
+        title: 'PDFテキスト全文検索を追加',
+        desc: '保安基準・細目告示・別添のPDFを取り込み、条文と合わせて横断検索できるようになった。'
+    },
+    {
+        date: '2026-02-08',
+        badge: 'feature',
+        badgeLabel: '新機能',
+        title: 'サイト公開・基本検索機能の実装',
+        desc: '道路運送車両法・保安基準のXMLを取り込み、AND/OR検索・同義語検索・フィルタリングを実装。GitHub Pages で静的サイトとして公開。'
+    }
+];
+
+function renderChangelog() {
+    const list = document.getElementById('changelogList');
+    if (!list) return;
+
+    list.innerHTML = CHANGELOG.map(item => `
+        <li class="changelog-item">
+            <time class="changelog-date" datetime="${item.date}">${item.date}</time>
+            <div class="changelog-content">
+                <div class="changelog-title">
+                    <span class="changelog-badge badge-${item.badge}">${item.badgeLabel}</span>${item.title}
+                </div>
+                <div class="changelog-desc">${item.desc}</div>
+            </div>
+        </li>
+    `).join('');
+}
+
+function setupChangelog() {
+    const toggle = document.getElementById('changelogToggle');
+    const body = document.getElementById('changelogBody');
+    if (!toggle || !body) return;
+
+    toggle.addEventListener('click', () => {
+        const isOpen = body.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    renderChangelog();
+}
+
+// ========================================
 // アプリケーション起動
 // ========================================
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    setupChangelog();
+});
